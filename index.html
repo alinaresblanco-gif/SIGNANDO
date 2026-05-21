@@ -78,7 +78,6 @@
 			border-radius: 28px;
 			background: linear-gradient(180deg, rgba(4, 18, 45, 0.1) 0%, rgba(4, 18, 45, 0.28) 100%);
 			backdrop-filter: blur(2px);
-			transform: translateY(-75px);
 		}
 
 		.marca {
@@ -90,14 +89,14 @@
 		}
 
 		.marca img {
-			width: clamp(130px, 34vw, 248px);
-			height: clamp(130px, 34vw, 248px);
+			width: clamp(220px, 58vw, 360px);
+			height: clamp(220px, 58vw, 360px);
 			object-fit: contain;
 			flex: 0 0 auto;
 		}
 
 		.marca span {
-			font-size: clamp(2.5rem, 10.4vw, 4.6rem);
+			font-size: clamp(2rem, 8.32vw, 3.68rem);
 			font-weight: 800;
 			letter-spacing: 0.04em;
 			color: var(--brand-blue-dark);
@@ -123,7 +122,7 @@
 			padding-right: 0;
 			align-content: stretch;
 			grid-auto-rows: minmax(56px, 1fr);
-			margin-top: 2.5vh;
+			margin-top: calc(2.5vh + 30px);
 		}
 
 		.botonera a {
@@ -160,7 +159,7 @@
 			}
 
 			.botonera {
-				margin-top: 1.5vh;
+				margin-top: calc(1.5vh + 30px);
 				row-gap: 0.8rem;
 				grid-auto-rows: minmax(54px, 1fr);
 			}

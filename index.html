@@ -84,7 +84,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			gap: 0;
+			gap: 0.1rem;
 			width: 100%;
 		}
 
@@ -96,12 +96,12 @@
 		}
 
 		.marca span {
-			font-size: clamp(1rem, 4.2vw, 1.85rem);
+			font-size: clamp(1.25rem, 5.2vw, 2.3rem);
 			font-weight: 800;
 			letter-spacing: 0.04em;
 			color: var(--brand-blue-dark);
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
-			margin-left: -0.45rem;
+			margin-left: 0;
 			white-space: nowrap;
 		}
 
@@ -117,10 +117,11 @@
 			display: grid;
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 			column-gap: 0.55rem;
-			row-gap: 1.15rem;
+			row-gap: 0.95rem;
 			overflow: auto;
 			padding-right: 0;
-			align-content: start;
+			align-content: stretch;
+			grid-auto-rows: minmax(56px, 1fr);
 			margin-top: 2.5vh;
 		}
 
@@ -133,10 +134,10 @@
 			font-weight: 700;
 			font-size: 0.81rem;
 			line-height: 1.2;
-			min-height: 42px;
-			padding: 0.54rem 0.62rem;
+			min-height: 56px;
+			padding: 0.62rem 0.68rem;
 			border-radius: 14px;
-			color: var(--ink);
+			color: #ffffff;
 			background: linear-gradient(90deg, rgba(15, 79, 168, 0.25) 0%, rgba(255, 211, 39, 0.25) 100%);
 			border: 1px solid rgba(255, 255, 255, 0.32);
 			box-shadow: 0 2px 0 rgba(4, 18, 45, 0.4);
@@ -159,12 +160,13 @@
 
 			.botonera {
 				margin-top: 1.5vh;
-				row-gap: 0.95rem;
+				row-gap: 0.8rem;
+				grid-auto-rows: minmax(54px, 1fr);
 			}
 
 			.botonera a {
 				font-size: 0.78rem;
-				min-height: 42px;
+				min-height: 54px;
 			}
 		}
 	</style>

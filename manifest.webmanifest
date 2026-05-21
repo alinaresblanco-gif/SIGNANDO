@@ -1,0 +1,18 @@
+{
+  "name": "SIGNANDO",
+  "short_name": "SIGNANDO",
+  "description": "App para aprender lengua de signos con vocabulario, práctica y progreso.",
+  "start_url": "./?sw-reset=1",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "imagenes/logo_beba.png",
+      "sizes": "1407x768",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

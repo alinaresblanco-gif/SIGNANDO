@@ -4,6 +4,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<title>SIGNANDO</title>
+	<meta name="theme-color" content="#000000">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="apple-touch-icon" href="imagenes/logo_beba.png">
 	<style>
 		html, body {
 			margin: 0;
@@ -38,5 +41,31 @@
 	<main class="pantalla-inicio">
 		<img src="imagenes/fondo_pantalla.png" alt="Pantalla de inicio de SIGNANDO">
 	</main>
+	<script>
+		(async () => {
+			const resetRequested = new URLSearchParams(window.location.search).get('sw-reset') === '1';
+
+			if (resetRequested && 'serviceWorker' in navigator) {
+				const registrations = await navigator.serviceWorker.getRegistrations();
+				await Promise.all(registrations.map((registration) => registration.unregister()));
+
+				if ('caches' in window) {
+					const cacheKeys = await caches.keys();
+					await Promise.all(cacheKeys.map((cacheName) => caches.delete(cacheName)));
+				}
+
+				const cleanUrl = new URL(window.location.href);
+				cleanUrl.searchParams.delete('sw-reset');
+				window.location.replace(cleanUrl.toString());
+				return;
+			}
+
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('sw.js');
+				});
+			}
+		})();
+	</script>
 </body>
 </html>

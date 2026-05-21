@@ -9,13 +9,24 @@
 	<link rel="icon" type="image/png" sizes="192x192" href="imagenes/icon-192.png">
 	<link rel="apple-touch-icon" sizes="180x180" href="imagenes/apple-touch-icon.png">
 	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800&display=swap');
+
+		:root {
+			--brand-blue: #0f4fa8;
+			--brand-blue-dark: #063174;
+			--brand-yellow: #ffd327;
+			--ink: #04122d;
+			--soft-white: #f4f8ff;
+		}
+
 		html, body {
 			margin: 0;
 			padding: 0;
 			width: 100%;
 			height: 100%;
 			overflow-x: hidden;
-			background: #000;
+			background: #02102a;
+			font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
 		}
 
 		body {
@@ -23,24 +34,181 @@
 		}
 
 		.pantalla-inicio {
-			width: 100vw;
-			max-width: 100%;
-			display: block;
+			position: relative;
+			width: 100%;
 			height: 100vh;
+			display: flex;
+			align-items: stretch;
+			justify-content: center;
+			overflow: hidden;
 		}
 
-		.pantalla-inicio img {
-			display: block;
+		.fondo {
+			position: absolute;
+			inset: 0;
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
-			object-position: center;
+			object-position: center top;
+		}
+
+		.capa-color {
+			position: absolute;
+			inset: 0;
+			background:
+				linear-gradient(180deg, rgba(255, 211, 39, 0.06) 0%, rgba(15, 79, 168, 0.2) 55%, rgba(4, 18, 45, 0.55) 100%),
+				radial-gradient(circle at 50% 8%, rgba(255, 211, 39, 0.14) 0%, rgba(255, 211, 39, 0) 34%);
+		}
+
+		.interfaz {
+			position: relative;
+			z-index: 2;
+			width: min(94vw, 500px);
+			height: calc(100vh - 1.5rem);
+			margin-top: 0.75rem;
+			margin-bottom: 0.75rem;
+			display: grid;
+			grid-template-rows: auto auto 1fr auto;
+			gap: 0.75rem;
+			padding: 1rem;
+			border-radius: 28px;
+			background: linear-gradient(180deg, rgba(4, 18, 45, 0.1) 0%, rgba(4, 18, 45, 0.28) 100%);
+			backdrop-filter: blur(2px);
+		}
+
+		.marca {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.9rem;
+		}
+
+		.marca img {
+			width: 62px;
+			height: 62px;
+			object-fit: contain;
+		}
+
+		.marca span {
+			font-size: 1.85rem;
+			font-weight: 800;
+			letter-spacing: 0.04em;
+			color: var(--brand-blue-dark);
+			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+		}
+
+		.titulo h1 {
+			margin: 0;
+			font-size: clamp(1.55rem, 4.8vw, 2rem);
+			line-height: 1.12;
+			color: #ffffff;
+			text-align: center;
+		}
+
+		.titulo p {
+			margin: 0.35rem 0 0;
+			font-size: 0.93rem;
+			line-height: 1.4;
+			color: rgba(244, 248, 255, 0.94);
+			text-align: center;
+		}
+
+		.botonera {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			column-gap: 0.55rem;
+			row-gap: 1.15rem;
+			overflow: auto;
+			padding-right: 0.15rem;
+			align-content: start;
+		}
+
+		.botonera a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			text-decoration: none;
+			font-weight: 700;
+			font-size: 0.81rem;
+			line-height: 1.2;
+			min-height: 28px;
+			padding: 0.38rem 0.5rem;
+			border-radius: 14px;
+			color: var(--ink);
+			background: linear-gradient(90deg, rgba(15, 79, 168, 0.6) 0%, rgba(255, 211, 39, 0.6) 100%);
+			border: 1px solid rgba(255, 255, 255, 0.32);
+			box-shadow: 0 2px 0 rgba(4, 18, 45, 0.4);
+			transition: transform 0.16s ease, filter 0.16s ease;
+		}
+
+		.botonera a:active {
+			transform: translateY(2px);
+			filter: brightness(0.98);
+		}
+
+		.resumen {
+			border-radius: 15px;
+			padding: 0.7rem 0.75rem;
+			background: linear-gradient(180deg, rgba(6, 49, 116, 0.36) 0%, rgba(4, 18, 45, 0.36) 100%);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			font-size: 0.84rem;
+			color: var(--soft-white);
+		}
+
+		@media (max-width: 390px) {
+			.interfaz {
+				width: calc(100vw - 0.7rem);
+				height: calc(100vh - 0.7rem);
+				margin: 0.35rem;
+				padding: 0.8rem;
+				border-radius: 22px;
+			}
+
+			.botonera a {
+				font-size: 0.81rem;
+				min-height: 28px;
+			}
 		}
 	</style>
 </head>
 <body>
 	<main class="pantalla-inicio">
-		<img src="imagenes/fondo_pantalla.png" alt="Pantalla de inicio de SIGNANDO">
+		<img class="fondo" src="imagenes/fondo_pantalla.png" alt="Pantalla de inicio de SIGNANDO">
+		<div class="capa-color"></div>
+
+		<section class="interfaz" aria-label="Panel principal de navegacion">
+			<div class="marca">
+				<img src="imagenes/icon-192.png" alt="Logo de SIGNANDO">
+				<span>SIGNANDO</span>
+			</div>
+
+			<header class="titulo">
+				<h1>Aprende lengua de signos con practica real</h1>
+				<p>Elige una vista y empezamos a construir el proyecto paso a paso.</p>
+			</header>
+
+			<nav class="botonera" aria-label="Vistas principales">
+				<a href="vistas/inicio.html">Inicio</a>
+				<a href="vistas/explorar-vocabulario.html">Explorar vocabulario</a>
+				<a href="vistas/detalle-signo.html">Detalle de signo</a>
+				<a href="vistas/practica.html">Practica</a>
+				<a href="vistas/correcion-resultado.html">Correccion y resultado</a>
+				<a href="vistas/reto-diario.html">Reto diario</a>
+				<a href="vistas/progreso.html">Progreso</a>
+				<a href="vistas/favoritos.html">Favoritos</a>
+				<a href="vistas/buscador.html">Buscador</a>
+				<a href="vistas/perfil-ajustes.html">Perfil y ajustes</a>
+				<a href="vistas/tutor-ia.html">Tutor IA</a>
+				<a href="vistas/practica-camara.html">Practica con camara</a>
+				<a href="vistas/panel-admin-contenidos.html">Panel admin contenidos</a>
+				<a href="vistas/leccion-html">Leccion</a>
+			</nav>
+
+			<div class="resumen">
+				14 vistas detectadas. La ruta "leccion-html" existe, pero conviene renombrarla a "leccion.html" para mantener consistencia en todo el proyecto.
+			</div>
+		</section>
 	</main>
 	<script>
 		(async () => {

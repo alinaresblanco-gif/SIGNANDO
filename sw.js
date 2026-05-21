@@ -4,7 +4,10 @@ const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest',
   './imagenes/fondo_pantalla.png',
-  './imagenes/logo_beba.png'
+  './imagenes/logo_beba.png',
+  './imagenes/icon-192.png',
+  './imagenes/icon-512.png',
+  './imagenes/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {

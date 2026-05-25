@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SIGNANDO – Perfil y Ajustes</title>
+  <meta name="theme-color" content="#0f4fa8">
+  <link rel="icon" type="image/png" sizes="192x192" href="../imagenes/icon-192.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --brand-blue: #0f4fa8;
+      --brand-blue-dark: #063174;
+      --brand-yellow: #ffd327;
+      --ink: #04122d;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #02102a;
+      font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
+      color: #ffffff;
+    }
+
+    /* ── CABECERA FIJA ── */
+    .vista-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0 1.1rem;
+      height: 62px;
+      background: linear-gradient(90deg, var(--brand-blue-dark) 0%, var(--brand-blue) 100%);
+      border-bottom: 3px solid var(--brand-yellow);
+      box-shadow: 0 3px 14px rgba(4, 18, 45, 0.55);
+    }
+
+    .vista-header__titulo {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .vista-header__icono {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .vista-header__nombre {
+      font-size: clamp(0.78rem, 3.2vw, 1.05rem);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--brand-yellow);
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .vista-header__btn-volver {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
+      font-weight: 700;
+      font-size: 0.76rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      background: var(--brand-yellow);
+      border: none;
+      border-radius: 10px;
+      padding: 0.42rem 0.82rem;
+      box-shadow: 0 2px 0 rgba(4, 18, 45, 0.35);
+      transition: filter 0.15s ease, transform 0.15s ease;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .vista-header__btn-volver:active {
+      transform: translateY(2px);
+      filter: brightness(0.94);
+    }
+
+    /* ── CONTENIDO ── */
+    .vista-contenido {
+      padding-top: 82px; /* compensa cabecera fija */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-left: 1.2rem;
+      padding-right: 1.2rem;
+      padding-bottom: 2rem;
+    }
+
+    .construccion-card {
+      background: linear-gradient(135deg, rgba(15,79,168,0.18) 0%, rgba(255,211,39,0.08) 100%);
+      border: 1px solid rgba(255,211,39,0.28);
+      border-radius: 20px;
+      padding: 2.4rem 2rem;
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 6px 28px rgba(4, 18, 45, 0.45);
+    }
+
+    .construccion-card__icono {
+      font-size: 3.8rem;
+      line-height: 1;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .construccion-card__titulo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--brand-yellow);
+      letter-spacing: 0.04em;
+      margin: 0 0 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .construccion-card__texto {
+      font-size: 0.92rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .construccion-card__badge {
+      display: inline-block;
+      margin-top: 1.4rem;
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--brand-yellow);
+      border-radius: 20px;
+      padding: 0.3rem 1rem;
+    }
+
+    @media (max-width: 400px) {
+      .vista-header { height: 56px; }
+      .vista-contenido { padding-top: 74px; }
+      .vista-header__btn-volver span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="vista-header">
+    <div class="vista-header__titulo">
+      <span class="vista-header__icono" aria-hidden="true">👤</span>
+      <span class="vista-header__nombre">Perfil y Ajustes</span>
+    </div>
+    <a href="../index.html" class="vista-header__btn-volver" aria-label="Volver al menú principal">
+      &#8592; <span>Menú principal</span>
+    </a>
+  </header>
+
+  <main class="vista-contenido">
+    <div class="construccion-card">
+      <span class="construccion-card__icono" aria-hidden="true">👤</span>
+      <h1 class="construccion-card__titulo">En construcción</h1>
+      <p class="construccion-card__texto">
+        Esta sección estará operativa muy pronto.<br>
+        Estamos trabajando para ofrecerte la mejor experiencia en <strong>Perfil y Ajustes</strong>.
+      </p>
+      <span class="construccion-card__badge">Próximamente</span>
+    </div>
+  </main>
+
+</body>
+</html>

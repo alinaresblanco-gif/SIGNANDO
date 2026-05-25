@@ -1,0 +1,307 @@
+// ═══════════════════════════════════════════════════════════════
+//  SIGNANDO – Backend Google Apps Script
+//  Despliegue: Aplicación web → Acceso: Cualquier usuario
+//  Hoja de cálculo → Pestaña "Usuarios" y "Log_accesos"
+// ═══════════════════════════════════════════════════════════════
+
+// ── CONFIGURACIÓN (editar antes de desplegar) ──────────────────
+const SPREADSHEET_ID = 'PEGA_AQUÍ_EL_ID_DE_TU_HOJA_DE_CÁLCULO';
+const ADMIN_EMAIL    = 'PEGA_AQUÍ_TU_EMAIL_DE_ADMINISTRADOR';
+const ADMIN_KEY      = 'PEGA_AQUÍ_UNA_CLAVE_SECRETA_PARA_APROBAR'; // p.ej. 'Sgn2026Admin#'
+const APP_URL        = 'PEGA_AQUÍ_LA_URL_DE_TU_APP_PUBLICADA';     // URL de index.html publicado
+// ──────────────────────────────────────────────────────────────
+
+/**
+ * Maneja peticiones POST desde el frontend.
+ * El frontend envía JSON como texto plano para evitar preflight CORS.
+ */
+function doPost(e) {
+  let data;
+  try {
+    data = JSON.parse(e.postData.contents);
+  } catch (err) {
+    return respuesta({ status: 'error', mensaje: 'JSON inválido' });
+  }
+
+  switch (data.action) {
+    case 'verificar_acceso':  return verificarAcceso(data);
+    case 'solicitar_acceso':  return solicitarAcceso(data);
+    case 'actualizar_perfil': return actualizarPerfil(data);
+    default:
+      return respuesta({ status: 'error', mensaje: 'Acción desconocida: ' + data.action });
+  }
+}
+
+/**
+ * Maneja peticiones GET — solo para aprobación de admin por enlace en email.
+ */
+function doGet(e) {
+  const p = e.parameter;
+  if (p.action === 'admin_aprobar' && p.adminKey === ADMIN_KEY && p.email) {
+    return aprobarUsuario(p.email);
+  }
+  return ContentService.createTextOutput('Acceso no autorizado.');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ENDPOINTS PRINCIPALES
+// ══════════════════════════════════════════════════════════════
+
+/**
+ * Verifica si un email/token tiene acceso a la app.
+ * Si viene con token, lo valida. Si viene solo email, devuelve el estado.
+ */
+function verificarAcceso({ email, token }) {
+  if (!email) return respuesta({ status: 'error', mensaje: 'Email requerido' });
+
+  const hoja  = getHoja('Usuarios');
+  const datos = hoja.getDataRange().getValues();
+
+  for (let i = 1; i < datos.length; i++) {
+    const fila = datos[i];
+    if (fila[COL.EMAIL].toLowerCase() !== email.toLowerCase()) continue;
+
+    const estado = fila[COL.ESTADO];
+
+    if (estado === 'bloqueado') return respuesta({ status: 'bloqueado' });
+    if (estado === 'pendiente') return respuesta({ status: 'pendiente' });
+
+    if (estado === 'activo') {
+      // Si viene con token, verificar que coincide
+      if (token && fila[COL.TOKEN] !== token) {
+        return respuesta({ status: 'token_invalido' });
+      }
+      // Actualizar fecha de último acceso
+      hoja.getRange(i + 1, COL.ULTIMO_ACCESO + 1).setValue(new Date().toISOString());
+      registrarLog(email);
+      return respuesta({
+        status:  'activo',
+        token:   fila[COL.TOKEN],
+        usuario: filaAObjeto(fila)
+      });
+    }
+  }
+
+  return respuesta({ status: 'no_existe' });
+}
+
+/**
+ * Registra una nueva solicitud de acceso.
+ * Crea la fila en estado "pendiente" y envía email al admin.
+ */
+function solicitarAcceso({ email, nombre, tipo_usuario }) {
+  if (!email || !nombre) {
+    return respuesta({ status: 'error', mensaje: 'Email y nombre son obligatorios' });
+  }
+
+  const hoja  = getHoja('Usuarios');
+  const datos = hoja.getDataRange().getValues();
+
+  // Comprobar si ya existe
+  for (let i = 1; i < datos.length; i++) {
+    if (datos[i][COL.EMAIL].toLowerCase() === email.toLowerCase()) {
+      return respuesta({ status: datos[i][COL.ESTADO] });
+    }
+  }
+
+  // Crear nuevo usuario en estado pendiente
+  const id  = Utilities.getUuid();
+  const now = new Date().toISOString();
+  hoja.appendRow([
+    id,                       // A: id
+    email,                    // B: email
+    nombre,                   // C: nombre
+    'pendiente',              // D: estado
+    '',                       // E: token (vacío hasta aprobación)
+    now,                      // F: fecha_registro
+    '',                       // G: fecha_ultimo_acceso
+    tipo_usuario || '',       // H: tipo_usuario
+    '',                       // I: nivel
+    '',                       // J: objetivo
+    '{}'                      // K: ajustes_json
+  ]);
+
+  // Enviar email al administrador con botón de aprobación
+  const urlAprobar =
+    ScriptApp.getService().getUrl() +
+    '?action=admin_aprobar' +
+    '&email=' + encodeURIComponent(email) +
+    '&adminKey=' + encodeURIComponent(ADMIN_KEY);
+
+  MailApp.sendEmail({
+    to:      ADMIN_EMAIL,
+    subject: '🖐 Signando – Solicitud de acceso: ' + nombre,
+    htmlBody:
+      '<div style="font-family:Arial,sans-serif;max-width:500px;">' +
+      '<h2 style="color:#0f4fa8;">Nueva solicitud de acceso</h2>' +
+      '<table style="border-collapse:collapse;width:100%">' +
+      '<tr><td style="padding:6px;font-weight:bold;">Nombre</td><td>' + nombre + '</td></tr>' +
+      '<tr><td style="padding:6px;font-weight:bold;">Email</td><td>' + email + '</td></tr>' +
+      '<tr><td style="padding:6px;font-weight:bold;">Tipo</td><td>' + (tipo_usuario || '—') + '</td></tr>' +
+      '<tr><td style="padding:6px;font-weight:bold;">Fecha</td><td>' + now + '</td></tr>' +
+      '</table>' +
+      '<br><a href="' + urlAprobar + '" style="display:inline-block;background:#ffd327;padding:12px 24px;color:#04122d;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">✅ Aprobar acceso</a>' +
+      '</div>'
+  });
+
+  return respuesta({ status: 'pendiente' });
+}
+
+/**
+ * Aprueba un usuario desde el enlace del email (llamada GET del admin).
+ */
+function aprobarUsuario(email) {
+  const hoja  = getHoja('Usuarios');
+  const datos = hoja.getDataRange().getValues();
+
+  for (let i = 1; i < datos.length; i++) {
+    const fila = datos[i];
+    if (fila[COL.EMAIL].toLowerCase() !== email.toLowerCase()) continue;
+
+    if (fila[COL.ESTADO] === 'activo') {
+      return ContentService.createTextOutput('⚠️ El usuario ' + email + ' ya estaba activo.');
+    }
+
+    const token = Utilities.getUuid();
+    hoja.getRange(i + 1, COL.ESTADO + 1).setValue('activo');
+    hoja.getRange(i + 1, COL.TOKEN + 1).setValue(token);
+
+    // Notificar al usuario por email
+    MailApp.sendEmail({
+      to:      email,
+      subject: '✅ ¡Tu acceso a Signando ha sido aprobado!',
+      htmlBody:
+        '<div style="font-family:Arial,sans-serif;max-width:500px;">' +
+        '<h2 style="color:#0f4fa8;">¡Bienvenido/a a Signando!</h2>' +
+        '<p>Tu solicitud de acceso ha sido aprobada. Ya puedes acceder a la app.</p>' +
+        '<br><a href="' + APP_URL + '" style="display:inline-block;background:#0f4fa8;padding:12px 24px;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">Entrar a Signando</a>' +
+        '</div>'
+    });
+
+    return ContentService.createTextOutput(
+      '✅ Usuario ' + email + ' aprobado y notificado por email.'
+    );
+  }
+
+  return ContentService.createTextOutput('❌ No se encontró ningún usuario con email: ' + email);
+}
+
+/**
+ * Actualiza los datos de perfil/ajustes de un usuario autenticado.
+ */
+function actualizarPerfil({ token, email, datos }) {
+  if (!token || !email) {
+    return respuesta({ status: 'error', mensaje: 'Token y email requeridos' });
+  }
+
+  const hoja  = getHoja('Usuarios');
+  const filas = hoja.getDataRange().getValues();
+
+  for (let i = 1; i < filas.length; i++) {
+    const fila = filas[i];
+    if (
+      fila[COL.EMAIL].toLowerCase() === email.toLowerCase() &&
+      fila[COL.TOKEN] === token
+    ) {
+      if (datos.nombre)        hoja.getRange(i + 1, COL.NOMBRE + 1).setValue(datos.nombre);
+      if (datos.tipo_usuario)  hoja.getRange(i + 1, COL.TIPO + 1).setValue(datos.tipo_usuario);
+      if (datos.nivel)         hoja.getRange(i + 1, COL.NIVEL + 1).setValue(datos.nivel);
+      if (datos.objetivo)      hoja.getRange(i + 1, COL.OBJETIVO + 1).setValue(datos.objetivo);
+      if (datos.foto_url)      hoja.getRange(i + 1, COL.FOTO + 1).setValue(datos.foto_url);
+      if (datos.ajustes !== undefined) {
+        hoja.getRange(i + 1, COL.AJUSTES + 1).setValue(JSON.stringify(datos.ajustes));
+      }
+      return respuesta({ status: 'ok' });
+    }
+  }
+
+  return respuesta({ status: 'error', mensaje: 'Token inválido o usuario no encontrado' });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ÍNDICES DE COLUMNAS (base 0, coincide con el array de valores)
+// ══════════════════════════════════════════════════════════════
+//  Hoja "Usuarios":
+//  A(0):id  B(1):email  C(2):nombre  D(3):estado  E(4):token
+//  F(5):fecha_registro  G(6):fecha_ultimo_acceso  H(7):tipo_usuario
+//  I(8):nivel  J(9):objetivo  K(10):foto_url  L(11):ajustes_json
+const COL = {
+  ID:            0,
+  EMAIL:         1,
+  NOMBRE:        2,
+  ESTADO:        3,
+  TOKEN:         4,
+  FECHA_REG:     5,
+  ULTIMO_ACCESO: 6,
+  TIPO:          7,
+  NIVEL:         8,
+  OBJETIVO:      9,
+  FOTO:          10,
+  AJUSTES:       11
+};
+
+// ══════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════
+
+function getHoja(nombre) {
+  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(nombre);
+}
+
+function filaAObjeto(fila) {
+  return {
+    id:           fila[COL.ID],
+    email:        fila[COL.EMAIL],
+    nombre:       fila[COL.NOMBRE],
+    tipo_usuario: fila[COL.TIPO],
+    nivel:        fila[COL.NIVEL],
+    objetivo:     fila[COL.OBJETIVO],
+    foto_url:     fila[COL.FOTO],
+    ajustes:      JSON.parse(fila[COL.AJUSTES] || '{}')
+  };
+}
+
+function registrarLog(email) {
+  try {
+    const hoja = getHoja('Log_accesos');
+    if (hoja) {
+      hoja.appendRow([email, new Date().toISOString(), '']);
+    }
+  } catch (e) {
+    // Log no crítico: ignorar si la hoja no existe
+  }
+}
+
+function respuesta(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  UTILIDAD: Crear la estructura de hojas la primera vez
+//  Ejecutar manualmente UNA VEZ desde el editor de Apps Script.
+// ══════════════════════════════════════════════════════════════
+function crearEstructuraHojas() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  // Hoja Usuarios
+  let hUsuarios = ss.getSheetByName('Usuarios');
+  if (!hUsuarios) hUsuarios = ss.insertSheet('Usuarios');
+  if (hUsuarios.getLastRow() === 0) {
+    hUsuarios.appendRow([
+      'id', 'email', 'nombre', 'estado', 'token',
+      'fecha_registro', 'fecha_ultimo_acceso', 'tipo_usuario',
+      'nivel', 'objetivo', 'foto_url', 'ajustes_json'
+    ]);
+  }
+
+  // Hoja Log_accesos
+  let hLog = ss.getSheetByName('Log_accesos');
+  if (!hLog) hLog = ss.insertSheet('Log_accesos');
+  if (hLog.getLastRow() === 0) {
+    hLog.appendRow(['email', 'fecha', 'dispositivo']);
+  }
+
+  Logger.log('Estructura de hojas creada correctamente.');
+}

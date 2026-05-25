@@ -189,6 +189,211 @@
 			}
 		}
 
+		/* ══════════════════════════════════════════════════════
+		   MODAL DE IDENTIFICACIÓN
+		   ══════════════════════════════════════════════════════ */
+
+		#signando-modal {
+			position: fixed;
+			inset: 0;
+			z-index: 200;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 1rem;
+			background: rgba(2, 16, 42, 0.88);
+			backdrop-filter: blur(6px);
+			-webkit-backdrop-filter: blur(6px);
+		}
+
+		#signando-modal.snd-oculto {
+			display: none;
+		}
+
+		.snd-card {
+			width: min(420px, 100%);
+			background: linear-gradient(160deg, #0f4fa8 0%, #063174 100%);
+			border: 2px solid var(--brand-yellow);
+			border-radius: 22px;
+			padding: 2rem 1.75rem 1.75rem;
+			box-shadow: 0 24px 64px rgba(2, 16, 42, 0.7);
+			color: #fff;
+			font-family: 'Lexend', sans-serif;
+		}
+
+		.snd-logo-row {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.6rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.snd-logo-row img {
+			width: 44px;
+			height: 44px;
+			object-fit: contain;
+		}
+
+		.snd-logo-row span {
+			font-size: 1.5rem;
+			font-weight: 800;
+			letter-spacing: 0.06em;
+			color: var(--brand-yellow);
+		}
+
+		/* Pasos: solo el activo es visible */
+		.snd-paso {
+			display: none;
+		}
+
+		.snd-paso.snd-activo {
+			display: block;
+		}
+
+		.snd-paso h2 {
+			margin: 0 0 0.35rem;
+			font-size: 1.15rem;
+			font-weight: 700;
+			color: #fff;
+		}
+
+		.snd-paso p {
+			margin: 0 0 1.25rem;
+			font-size: 0.82rem;
+			color: rgba(255, 255, 255, 0.72);
+			line-height: 1.45;
+		}
+
+		.snd-paso p strong {
+			color: var(--brand-yellow);
+		}
+
+		/* Campos de formulario */
+		.snd-campo {
+			margin-bottom: 1rem;
+		}
+
+		.snd-campo label {
+			display: block;
+			font-size: 0.78rem;
+			font-weight: 600;
+			margin-bottom: 0.3rem;
+			color: rgba(255, 255, 255, 0.85);
+		}
+
+		.snd-campo input,
+		.snd-campo select {
+			width: 100%;
+			padding: 0.7rem 0.9rem;
+			border-radius: 10px;
+			border: 1.5px solid rgba(255, 255, 255, 0.25);
+			background: rgba(255, 255, 255, 0.1);
+			color: #fff;
+			font-family: 'Lexend', sans-serif;
+			font-size: 0.9rem;
+			outline: none;
+			transition: border-color 0.18s;
+		}
+
+		.snd-campo input::placeholder {
+			color: rgba(255, 255, 255, 0.4);
+		}
+
+		.snd-campo input:focus,
+		.snd-campo select:focus {
+			border-color: var(--brand-yellow);
+		}
+
+		.snd-campo select option {
+			background: #063174;
+			color: #fff;
+		}
+
+		/* Botón principal */
+		.snd-btn-primary {
+			width: 100%;
+			padding: 0.75rem;
+			border: none;
+			border-radius: 12px;
+			background: var(--brand-yellow);
+			color: #04122d;
+			font-family: 'Lexend', sans-serif;
+			font-size: 0.95rem;
+			font-weight: 700;
+			cursor: pointer;
+			margin-top: 0.35rem;
+			transition: filter 0.18s, transform 0.15s;
+		}
+
+		.snd-btn-primary:hover {
+			filter: brightness(1.08);
+		}
+
+		.snd-btn-primary:active {
+			transform: translateY(1px);
+		}
+
+		.snd-btn-primary:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		/* Enlace/botón secundario */
+		.snd-btn-link {
+			background: none;
+			border: none;
+			color: rgba(255, 255, 255, 0.65);
+			font-family: 'Lexend', sans-serif;
+			font-size: 0.78rem;
+			cursor: pointer;
+			padding: 0;
+			text-decoration: underline;
+			margin-top: 0.75rem;
+			display: block;
+			text-align: center;
+		}
+
+		.snd-btn-link:hover {
+			color: #fff;
+		}
+
+		/* Mensaje de error */
+		.snd-error {
+			background: rgba(255, 80, 80, 0.18);
+			border: 1px solid rgba(255, 80, 80, 0.5);
+			border-radius: 8px;
+			padding: 0.55rem 0.75rem;
+			font-size: 0.8rem;
+			color: #ffb4b4;
+			margin-bottom: 0.75rem;
+		}
+
+		.snd-error.snd-oculto {
+			display: none;
+		}
+
+		/* Estado: bienvenido */
+		.snd-estado {
+			text-align: center;
+			padding: 0.5rem 0 0.25rem;
+		}
+
+		.snd-estado .snd-icono-grande {
+			font-size: 3rem;
+			margin-bottom: 0.5rem;
+			display: block;
+		}
+
+		.snd-estado h2 {
+			margin: 0 0 0.5rem;
+			font-size: 1.2rem;
+		}
+
+		.snd-estado p {
+			margin: 0;
+		}
+
 		@media (max-width: 220px) {
 			.interfaz {
 				width: calc(100vw - 0.3rem);
@@ -270,6 +475,101 @@
 
 		</section>
 	</main>
+	<!-- ══════════════════════════════════════════════════════════
+	     MODAL DE IDENTIFICACIÓN DE USUARIO
+	     ══════════════════════════════════════════════════════════ -->
+	<div id="signando-modal" class="snd-oculto" role="dialog" aria-modal="true" aria-labelledby="snd-titulo-modal">
+
+		<div class="snd-card">
+
+			<!-- Logo -->
+			<div class="snd-logo-row">
+				<img src="imagenes/icon-192.png" alt="Logo Signando">
+				<span>SIGNANDO</span>
+			</div>
+
+			<!-- ── PASO 1: Email ─────────────────────────────────── -->
+			<div id="snd-paso-email" class="snd-paso snd-activo">
+				<h2 id="snd-titulo-modal">Identifícate para continuar</h2>
+				<p>Introduce tu email. Si ya tienes acceso, entrarás directamente.</p>
+
+				<div id="snd-error-email" class="snd-error snd-oculto"></div>
+
+				<form id="snd-form-email" novalidate>
+					<div class="snd-campo">
+						<label for="snd-input-email">Correo electrónico</label>
+						<input
+							type="email"
+							id="snd-input-email"
+							name="email"
+							placeholder="tu@email.com"
+							autocomplete="email"
+							required
+						>
+					</div>
+					<button type="submit" class="snd-btn-primary">Continuar →</button>
+				</form>
+			</div>
+
+			<!-- ── PASO 2: Solicitar acceso (nuevo usuario) ────────── -->
+			<div id="snd-paso-registro" class="snd-paso">
+				<h2>Solicitar acceso</h2>
+				<p>El email <strong id="snd-label-email-reg"></strong> no tiene acceso aún. Rellena estos datos y el administrador lo revisará en breve.</p>
+
+				<div id="snd-error-registro" class="snd-error snd-oculto"></div>
+
+				<input type="hidden" id="snd-hidden-email">
+
+				<form id="snd-form-registro" novalidate>
+					<div class="snd-campo">
+						<label for="snd-input-nombre">Tu nombre completo</label>
+						<input
+							type="text"
+							id="snd-input-nombre"
+							name="nombre"
+							placeholder="Nombre Apellido"
+							autocomplete="name"
+							required
+						>
+					</div>
+					<div class="snd-campo">
+						<label for="snd-input-tipo">¿Cómo describes tu perfil?</label>
+						<select id="snd-input-tipo" name="tipo_usuario">
+							<option value="">— Selecciona una opción —</option>
+							<option value="persona_sorda">Persona sorda o con discapacidad auditiva</option>
+							<option value="oyente_aprendiz">Oyente que quiere aprender LSE</option>
+							<option value="familiar">Familiar o entorno cercano de persona sorda</option>
+							<option value="profesional">Profesional (intérprete, docente…)</option>
+						</select>
+					</div>
+					<button type="submit" class="snd-btn-primary">Enviar solicitud</button>
+				</form>
+
+				<button id="snd-btn-volver" class="snd-btn-link">← Usar otro email</button>
+			</div>
+
+			<!-- ── PASO 3: Solicitud pendiente ─────────────────────── -->
+			<div id="snd-paso-pendiente" class="snd-paso">
+				<div class="snd-estado">
+					<span class="snd-icono-grande">⏳</span>
+					<h2>Solicitud recibida</h2>
+					<p>Tu solicitud está siendo revisada. Recibirás un email en cuanto el administrador la apruebe.</p>
+				</div>
+			</div>
+
+			<!-- ── PASO 4: Bienvenido (acceso activo) ──────────────── -->
+			<div id="snd-paso-bienvenido" class="snd-paso">
+				<div class="snd-estado">
+					<span class="snd-icono-grande">👋</span>
+					<h2>¡Hola, <span id="snd-bienvenido-nombre"></span>!</h2>
+					<p>Sesión iniciada correctamente. Cargando tu espacio…</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- fin modal -->
+
 	<script>
 		(async () => {
 			const resetRequested = new URLSearchParams(window.location.search).get('sw-reset') === '1';
@@ -296,5 +596,6 @@
 			}
 		})();
 	</script>
+	<script src="js/app.js"></script>
 </body>
 </html>

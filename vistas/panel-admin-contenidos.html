@@ -27,6 +27,31 @@
       color: #ffffff;
     }
 
+    body {
+      position: relative;
+      isolation: isolate;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: url('../imagenes/fondo_pantalla.png') center top / cover no-repeat;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(2, 16, 42, 0.38) 0%, rgba(2, 16, 42, 0.62) 100%);
+      pointer-events: none;
+    }
+
     /* ── CABECERA FIJA ── */
     .vista-header {
       position: fixed;
@@ -36,31 +61,36 @@
       z-index: 100;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0 1.1rem;
-      height: 62px;
+      justify-content: flex-end;
+      gap: 1rem;
+      padding: 0 1.65rem;
+      height: 93px;
       background: linear-gradient(90deg, var(--brand-blue-dark) 0%, var(--brand-blue) 100%);
       border-bottom: 3px solid var(--brand-yellow);
       box-shadow: 0 3px 14px rgba(4, 18, 45, 0.55);
     }
 
     .vista-header__titulo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 0.55rem;
-      flex: 1;
+      justify-content: center;
+      gap: 0.82rem;
       min-width: 0;
+      max-width: calc(100vw - 220px);
+      text-align: center;
     }
 
     .vista-header__icono {
-      font-size: 1.5rem;
+      font-size: 2.25rem;
       line-height: 1;
       flex-shrink: 0;
     }
 
     .vista-header__nombre {
-      font-size: clamp(0.78rem, 3.2vw, 1.05rem);
+      font-size: clamp(1.17rem, 4.8vw, 1.58rem);
       font-weight: 800;
       letter-spacing: 0.06em;
       color: var(--brand-yellow);
@@ -78,13 +108,13 @@
       text-decoration: none;
       font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
       font-weight: 700;
-      font-size: 0.76rem;
+      font-size: 0.92rem;
       letter-spacing: 0.02em;
       color: var(--ink);
       background: var(--brand-yellow);
       border: none;
       border-radius: 10px;
-      padding: 0.42rem 0.82rem;
+      padding: 0.58rem 1rem;
       box-shadow: 0 2px 0 rgba(4, 18, 45, 0.35);
       transition: filter 0.15s ease, transform 0.15s ease;
       white-space: nowrap;
@@ -98,7 +128,7 @@
 
     /* ── CONTENIDO ── */
     .vista-contenido {
-      padding-top: 82px; /* compensa cabecera fija */
+      padding-top: 117px; /* compensa cabecera fija */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -158,8 +188,17 @@
     }
 
     @media (max-width: 400px) {
-      .vista-header { height: 56px; }
-      .vista-contenido { padding-top: 74px; }
+      .vista-header {
+        height: 78px;
+        padding: 0 1rem;
+      }
+      .vista-contenido { padding-top: 98px; }
+      .vista-header__titulo {
+        max-width: calc(100vw - 120px);
+        gap: 0.55rem;
+      }
+      .vista-header__icono { font-size: 1.85rem; }
+      .vista-header__nombre { font-size: clamp(0.92rem, 4.4vw, 1.2rem); }
       .vista-header__btn-volver span { display: none; }
     }
   </style>
@@ -169,10 +208,10 @@
   <header class="vista-header">
     <div class="vista-header__titulo">
       <span class="vista-header__icono" aria-hidden="true">⚙️</span>
-      <span class="vista-header__nombre">Panel Admin. Contenidos</span>
+      <span class="vista-header__nombre">PANEL ADMIN. CONTENIDOS</span>
     </div>
     <a href="../index.html" class="vista-header__btn-volver" aria-label="Volver al menú principal">
-      &#8592; <span>Menú principal</span>
+      &#x21A9; <span>Menú principal</span>
     </a>
   </header>
 

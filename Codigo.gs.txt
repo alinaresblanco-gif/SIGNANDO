@@ -4,12 +4,12 @@
 //  Hoja de cálculo → Pestaña "Usuarios" y "Log_accesos"
 // ═══════════════════════════════════════════════════════════════
 
-// ── CONFIGURACIÓN (editar antes de desplegar) ──────────────────
-const SPREADSHEET_ID = 'PEGA_AQUÍ_EL_ID_DE_TU_HOJA_DE_CÁLCULO';
-const ADMIN_EMAIL    = 'PEGA_AQUÍ_TU_EMAIL_DE_ADMINISTRADOR';
-const ADMIN_KEY      = 'PEGA_AQUÍ_UNA_CLAVE_SECRETA_PARA_APROBAR'; // p.ej. 'Sgn2026Admin#'
-const APP_URL        = 'PEGA_AQUÍ_LA_URL_DE_TU_APP_PUBLICADA';     // URL de index.html publicado
-// ──────────────────────────────────────────────────────────────
+// CONFIGURACION (editar antes de desplegar)
+const SPREADSHEET_ID = '1255lFC7brgeL8p2fXw4VcEhITEPWDO-B_XyZdXjhw3U';
+const ADMIN_EMAIL    = 'alinares.blanco@gmail.com';
+const ADMIN_KEY      = 'Linares#14530'; // ej. 'Sgn2026Admin#'
+const APP_URL        = 'https://alinaresblanco-gif.github.io/SIGNANDO/?sw-reset=1';     // URL publica de index.html
+// --------------------------------------------------------------
 
 /**
  * Maneja peticiones POST desde el frontend.
@@ -118,7 +118,8 @@ function solicitarAcceso({ email, nombre, tipo_usuario }) {
     tipo_usuario || '',       // H: tipo_usuario
     '',                       // I: nivel
     '',                       // J: objetivo
-    '{}'                      // K: ajustes_json
+    '',                       // K: foto_url
+    '{}'                      // L: ajustes_json
   ]);
 
   // Enviar email al administrador con botón de aprobación
@@ -288,20 +289,16 @@ function crearEstructuraHojas() {
   // Hoja Usuarios
   let hUsuarios = ss.getSheetByName('Usuarios');
   if (!hUsuarios) hUsuarios = ss.insertSheet('Usuarios');
-  if (hUsuarios.getLastRow() === 0) {
-    hUsuarios.appendRow([
-      'id', 'email', 'nombre', 'estado', 'token',
-      'fecha_registro', 'fecha_ultimo_acceso', 'tipo_usuario',
-      'nivel', 'objetivo', 'foto_url', 'ajustes_json'
-    ]);
-  }
+  hUsuarios.getRange('A1:L1').setValues([[
+    'id', 'email', 'nombre', 'estado', 'token',
+    'fecha_registro', 'fecha_ultimo_acceso', 'tipo_usuario',
+    'nivel', 'objetivo', 'foto_url', 'ajustes_json'
+  ]]);
 
   // Hoja Log_accesos
   let hLog = ss.getSheetByName('Log_accesos');
   if (!hLog) hLog = ss.insertSheet('Log_accesos');
-  if (hLog.getLastRow() === 0) {
-    hLog.appendRow(['email', 'fecha', 'dispositivo']);
-  }
+  hLog.getRange('A1:C1').setValues([['email', 'fecha', 'dispositivo']]);
 
   Logger.log('Estructura de hojas creada correctamente.');
 }

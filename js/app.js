@@ -6,7 +6,7 @@ const SIGNANDO = (() => {
 
   // ── CONFIGURACIÓN ────────────────────────────────────────────
   // Sustituir por la URL de tu Apps Script desplegado
-  const GAS_URL    = 'PEGA_AQUÍ_LA_URL_DE_TU_APPS_SCRIPT';
+  const GAS_URL    = 'https://script.google.com/macros/s/AKfycbzMwgUK0RRr0armJONCL5c4ngQnqlBi-JM-ggI8CT2q6QBVW19NJMzm6R9wVC0QvBIvzg/exec';
   const LS_TOKEN   = 'signando_token';
   const LS_EMAIL   = 'signando_email';
   const LS_USUARIO = 'signando_usuario';

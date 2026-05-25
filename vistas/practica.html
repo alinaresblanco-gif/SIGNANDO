@@ -104,21 +104,24 @@
       flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      justify-content: center;
       text-decoration: none;
-      font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
-      font-weight: 700;
-      font-size: 0.92rem;
-      letter-spacing: 0.02em;
       color: var(--ink);
       background: var(--brand-yellow);
       border: none;
-      border-radius: 10px;
-      padding: 0.58rem 1rem;
+      border-radius: 14px;
+      width: 54px;
+      height: 54px;
+      padding: 0;
       box-shadow: 0 2px 0 rgba(4, 18, 45, 0.35);
       transition: filter 0.15s ease, transform 0.15s ease;
-      white-space: nowrap;
       cursor: pointer;
+    }
+
+    .vista-header__btn-volver svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
     }
 
     .vista-header__btn-volver:active {
@@ -199,7 +202,10 @@
       }
       .vista-header__icono { font-size: 1.85rem; }
       .vista-header__nombre { font-size: clamp(0.92rem, 4.4vw, 1.2rem); }
-      .vista-header__btn-volver span { display: none; }
+      .vista-header__btn-volver {
+        width: 48px;
+        height: 48px;
+      }
     }
   </style>
 </head>
@@ -211,7 +217,9 @@
       <span class="vista-header__nombre">PRÁCTICA</span>
     </div>
     <a href="../index.html" class="vista-header__btn-volver" aria-label="Volver al menú principal">
-      &#x21A9; <span>Menú principal</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 3.2 3.8 10v10.2h5.7v-5.8h5V20h5.7V10L12 3.2zm0-2.2 10 8.3v12.7h-9.7v-5.8h-.6V22H2V9.3L12 1z"/>
+      </svg>
     </a>
   </header>
 

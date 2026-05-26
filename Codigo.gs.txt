@@ -143,7 +143,15 @@ function solicitarAcceso({ email, nombre, tipo_usuario }) {
   // Comprobar si ya existe
   for (let i = 1; i < datos.length; i++) {
     if (datos[i][COL.EMAIL].toLowerCase() === email.toLowerCase()) {
-      return respuesta({ status: datos[i][COL.ESTADO] });
+      const estadoExistente = datos[i][COL.ESTADO];
+      if (estadoExistente === 'pendiente') {
+        const nowReenvio = new Date().toISOString();
+        const nombreExistente = nombre || datos[i][COL.NOMBRE] || 'Usuario';
+        const tipoExistente = tipo_usuario || datos[i][COL.TIPO] || '';
+        enviarCorreoSolicitudAdmin(email, nombreExistente, tipoExistente, nowReenvio);
+        return respuesta({ status: 'pendiente', reenviado: true });
+      }
+      return respuesta({ status: estadoExistente });
     }
   }
 
@@ -166,29 +174,38 @@ function solicitarAcceso({ email, nombre, tipo_usuario }) {
   ]);
 
   // Enviar email al administrador con botón de aprobación
+  enviarCorreoSolicitudAdmin(email, nombre, tipo_usuario || '', now);
+
+  return respuesta({ status: 'pendiente' });
+}
+
+function enviarCorreoSolicitudAdmin(email, nombre, tipo_usuario, fechaIso) {
   const urlAprobar =
     SCRIPT_URL +
     '?action=admin_aprobar' +
     '&email=' + encodeURIComponent(email) +
     '&adminKey=' + encodeURIComponent(ADMIN_KEY);
 
-  MailApp.sendEmail({
-    to:      ADMIN_EMAIL,
-    subject: '🖐 Signando – Solicitud de acceso: ' + nombre,
-    htmlBody:
-      '<div style="font-family:Arial,sans-serif;max-width:500px;">' +
-      '<h2 style="color:#0f4fa8;">Nueva solicitud de acceso</h2>' +
-      '<table style="border-collapse:collapse;width:100%">' +
-      '<tr><td style="padding:6px;font-weight:bold;">Nombre</td><td>' + nombre + '</td></tr>' +
-      '<tr><td style="padding:6px;font-weight:bold;">Email</td><td>' + email + '</td></tr>' +
-      '<tr><td style="padding:6px;font-weight:bold;">Tipo</td><td>' + (tipo_usuario || '—') + '</td></tr>' +
-      '<tr><td style="padding:6px;font-weight:bold;">Fecha</td><td>' + now + '</td></tr>' +
-      '</table>' +
-      '<br><a href="' + urlAprobar + '" style="display:inline-block;background:#ffd327;padding:12px 24px;color:#04122d;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">✅ Aprobar acceso</a>' +
-      '</div>'
-  });
-
-  return respuesta({ status: 'pendiente' });
+  try {
+    MailApp.sendEmail({
+      to:      ADMIN_EMAIL,
+      subject: '🖐 Signando – Solicitud de acceso: ' + nombre,
+      htmlBody:
+        '<div style="font-family:Arial,sans-serif;max-width:500px;">' +
+        '<h2 style="color:#0f4fa8;">Nueva solicitud de acceso</h2>' +
+        '<table style="border-collapse:collapse;width:100%">' +
+        '<tr><td style="padding:6px;font-weight:bold;">Nombre</td><td>' + nombre + '</td></tr>' +
+        '<tr><td style="padding:6px;font-weight:bold;">Email</td><td>' + email + '</td></tr>' +
+        '<tr><td style="padding:6px;font-weight:bold;">Tipo</td><td>' + (tipo_usuario || '—') + '</td></tr>' +
+        '<tr><td style="padding:6px;font-weight:bold;">Fecha</td><td>' + fechaIso + '</td></tr>' +
+        '</table>' +
+        '<br><a href="' + urlAprobar + '" style="display:inline-block;background:#ffd327;padding:12px 24px;color:#04122d;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">✅ Aprobar acceso</a>' +
+        '</div>'
+    });
+  } catch (err) {
+    throw new Error('No se pudo enviar correo al admin (' + ADMIN_EMAIL + '): ' +
+      (err && err.message ? err.message : String(err)));
+  }
 }
 
 /**

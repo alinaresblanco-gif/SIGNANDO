@@ -224,12 +224,12 @@
     </a>
   </header>
 
-  <main class="vista-contenido">
-    <div class="tabs-corporativas">
+  <main class="vista-contenido perfil-ajustes-main">
+    <div class="tabs-corporativas tabs-fixed">
       <button class="tab-btn active" id="tab-perfil-btn" type="button">Perfil</button>
       <button class="tab-btn" id="tab-ajustes-btn" type="button">Ajustes</button>
     </div>
-    <div class="tabs-paneles">
+    <div class="tabs-paneles-scroll">
       <section class="tab-panel active" id="tab-perfil-panel">
         <!-- Aquí irá el contenido de Perfil -->
         <h2>Tu Perfil</h2>
@@ -244,28 +244,44 @@
   </main>
 
   <style>
-  .tabs-corporativas {
+  .perfil-ajustes-main {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 2.2rem;
-    margin-top: 0.5rem;
+    flex-direction: column;
+    height: calc(100vh - 140px); /* cabecera fija */
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .tabs-corporativas.tabs-fixed {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: linear-gradient(90deg, var(--brand-blue-dark) 0%, var(--brand-blue) 100%);
+    border-bottom: 3px solid var(--brand-yellow);
+    box-shadow: 0 2px 8px rgba(4,18,45,0.10);
+    margin: 0;
+    padding: 0;
   }
   .tab-btn {
+    flex: 1 1 0;
     font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
     font-weight: 700;
     font-size: 1.13rem;
-    padding: 0.85rem 2.2rem;
+    padding: 1.1rem 0;
     border: none;
-    border-radius: 18px 18px 0 0;
-    background: linear-gradient(90deg, var(--brand-blue-dark) 0%, var(--brand-blue) 100%);
+    border-radius: 0;
+    background: transparent;
     color: #fff;
-    box-shadow: 0 2px 8px rgba(4,18,45,0.13);
     cursor: pointer;
     transition: background 0.18s, color 0.18s;
     outline: none;
     border-bottom: 3px solid transparent;
+    box-shadow: none;
+    margin: 0;
   }
   .tab-btn.active, .tab-btn:focus {
     background: var(--brand-yellow);
@@ -273,24 +289,27 @@
     border-bottom: 3px solid var(--brand-yellow);
     z-index: 2;
   }
-  .tabs-paneles {
-    display: flex;
-    flex-direction: row;
+  .tabs-paneles-scroll {
+    flex: 1 1 auto;
     width: 100%;
-    min-height: 320px;
-    max-width: 700px;
-    margin: 0 auto;
+    height: 100%;
+    overflow-y: auto;
+    background: none;
     position: relative;
+    min-height: 0;
+    display: flex;
   }
   .tab-panel {
     flex: 1 1 100%;
+    width: 100%;
     background: linear-gradient(135deg, rgba(15,79,168,0.10) 0%, rgba(255,211,39,0.06) 100%);
     border-radius: 0 0 22px 22px;
     box-shadow: 0 4px 18px rgba(4,18,45,0.10);
     padding: 2.2rem 1.5rem 1.5rem 1.5rem;
     display: none;
-    min-height: 260px;
+    min-height: 100%;
     animation: fadein 0.3s;
+    overflow-y: auto;
   }
   .tab-panel.active {
     display: block;
@@ -300,10 +319,9 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   @media (max-width: 600px) {
-    .tabs-paneles { flex-direction: column; }
+    .perfil-ajustes-main { height: calc(100vh - 112px); }
     .tab-panel { padding: 1.2rem 0.5rem; }
-    .tabs-corporativas { gap: 0.2rem; }
-    .tab-btn { font-size: 0.98rem; padding: 0.7rem 1.1rem; }
+    .tab-btn { font-size: 0.98rem; padding: 0.7rem 0; }
   }
   </style>
   <script>

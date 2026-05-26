@@ -10,6 +10,7 @@ const ADMIN_EMAIL    = 'alinares.blanco@gmail.com';
 const ADMIN_KEY      = 'Linares#14530'; // ej. 'Sgn2026Admin#'
 const APP_URL        = 'https://alinaresblanco-gif.github.io/SIGNANDO/?sw-reset=1';     // URL publica de index.html
 const SCRIPT_URL     = 'https://script.google.com/macros/s/AKfycbyiM8wFP_XAqbtxfrEWB4OYdNUrux8bvQmGsjq9wAMbBWMCOwxgnJ48jVdpep_as_iQ0w/exec'; // URL de este despliegue
+const BACKEND_VERSION = '2026-05-26.1';
 // --------------------------------------------------------------
 
 /**
@@ -46,6 +47,11 @@ function doPost(e) {
 function doGet(e) {
   try {
     const p = e.parameter;
+
+    if (p.action === 'ping') {
+      return diagnosticoBackend();
+    }
+
     if (p.action === 'admin_aprobar' && p.adminKey === ADMIN_KEY && p.email) {
       return aprobarUsuario(p.email);
     }
@@ -53,6 +59,29 @@ function doGet(e) {
   } catch (err) {
     return ContentService.createTextOutput(
       'Error backend: ' + (err && err.message ? err.message : String(err))
+    );
+  }
+}
+
+function diagnosticoBackend() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const usuarios = ss.getSheetByName('Usuarios');
+    const logs = ss.getSheetByName('Log_accesos');
+
+    return ContentService.createTextOutput(
+      [
+        'OK BACKEND',
+        'version=' + BACKEND_VERSION,
+        'spreadsheet=' + ss.getName(),
+        'usuarios=' + (usuarios ? 'si' : 'no'),
+        'log_accesos=' + (logs ? 'si' : 'no')
+      ].join('\n')
+    );
+  } catch (err) {
+    return ContentService.createTextOutput(
+      'ERROR BACKEND\nversion=' + BACKEND_VERSION + '\ndetalle=' +
+      (err && err.message ? err.message : String(err))
     );
   }
 }

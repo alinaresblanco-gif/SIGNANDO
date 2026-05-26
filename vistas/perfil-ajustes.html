@@ -225,8 +225,108 @@
   </header>
 
   <main class="vista-contenido">
-    <!-- Solo cabecera, icono, título y botón volver -->
+    <div class="tabs-corporativas">
+      <button class="tab-btn active" id="tab-perfil-btn" type="button">Perfil</button>
+      <button class="tab-btn" id="tab-ajustes-btn" type="button">Ajustes</button>
+    </div>
+    <div class="tabs-paneles">
+      <section class="tab-panel active" id="tab-perfil-panel">
+        <!-- Aquí irá el contenido de Perfil -->
+        <h2>Tu Perfil</h2>
+        <p>Aquí aparecerán tus datos personales y opciones de edición.</p>
+      </section>
+      <section class="tab-panel" id="tab-ajustes-panel">
+        <!-- Aquí irá el contenido de Ajustes -->
+        <h2>Ajustes</h2>
+        <p>Aquí podrás modificar tus preferencias y configuración de la app.</p>
+      </section>
+    </div>
   </main>
+
+  <style>
+  .tabs-corporativas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2.2rem;
+    margin-top: 0.5rem;
+  }
+  .tab-btn {
+    font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 700;
+    font-size: 1.13rem;
+    padding: 0.85rem 2.2rem;
+    border: none;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(90deg, var(--brand-blue-dark) 0%, var(--brand-blue) 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(4,18,45,0.13);
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    outline: none;
+    border-bottom: 3px solid transparent;
+  }
+  .tab-btn.active, .tab-btn:focus {
+    background: var(--brand-yellow);
+    color: var(--ink);
+    border-bottom: 3px solid var(--brand-yellow);
+    z-index: 2;
+  }
+  .tabs-paneles {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 320px;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .tab-panel {
+    flex: 1 1 100%;
+    background: linear-gradient(135deg, rgba(15,79,168,0.10) 0%, rgba(255,211,39,0.06) 100%);
+    border-radius: 0 0 22px 22px;
+    box-shadow: 0 4px 18px rgba(4,18,45,0.10);
+    padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+    display: none;
+    min-height: 260px;
+    animation: fadein 0.3s;
+  }
+  .tab-panel.active {
+    display: block;
+  }
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 600px) {
+    .tabs-paneles { flex-direction: column; }
+    .tab-panel { padding: 1.2rem 0.5rem; }
+    .tabs-corporativas { gap: 0.2rem; }
+    .tab-btn { font-size: 0.98rem; padding: 0.7rem 1.1rem; }
+  }
+  </style>
+  <script>
+  // Tabs funcionalidad
+  document.addEventListener('DOMContentLoaded', function() {
+    const perfilBtn = document.getElementById('tab-perfil-btn');
+    const ajustesBtn = document.getElementById('tab-ajustes-btn');
+    const perfilPanel = document.getElementById('tab-perfil-panel');
+    const ajustesPanel = document.getElementById('tab-ajustes-panel');
+    perfilBtn.addEventListener('click', function() {
+      perfilBtn.classList.add('active');
+      ajustesBtn.classList.remove('active');
+      perfilPanel.classList.add('active');
+      ajustesPanel.classList.remove('active');
+    });
+    ajustesBtn.addEventListener('click', function() {
+      ajustesBtn.classList.add('active');
+      perfilBtn.classList.remove('active');
+      ajustesPanel.classList.add('active');
+      perfilPanel.classList.remove('active');
+    });
+  });
+  </script>
 
 </body>
 </html>

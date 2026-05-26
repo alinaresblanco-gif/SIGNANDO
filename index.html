@@ -570,6 +570,126 @@
 	</div>
 	<!-- fin modal -->
 
+	<!-- Avatar flotante BEBA con bocadillo -->
+    <div id="beba-avatar-flotante" style="display:none;">
+      <img src="imagenes/beba_transp.png" alt="Avatar Beba" class="beba-avatar-img">
+      <div class="beba-bocadillo">
+        Hola, soy <b>Beba</b> y quiero ayudarte a iniciar la app.<br>
+        Entra en la vista de <b>Perfil y ajustes</b> para hacer tuya la app.
+        <button id="beba-ir-perfil" class="beba-bocadillo-btn">Ir a Perfil y ajustes</button>
+      </div>
+      <button id="beba-cerrar" class="beba-cerrar-btn" title="Cerrar">×</button>
+    </div>
+    <!-- Fin avatar flotante -->
+
+    <script>
+    // Mostrar avatar solo la primera vez
+    document.addEventListener('DOMContentLoaded', function() {
+      const AVATAR_KEY = 'beba_bienvenida_mostrada';
+      const avatar = document.getElementById('beba-avatar-flotante');
+      if (!localStorage.getItem(AVATAR_KEY)) {
+        avatar.style.display = 'flex';
+      }
+      document.getElementById('beba-ir-perfil').onclick = function() {
+        localStorage.setItem(AVATAR_KEY, '1');
+        avatar.style.display = 'none';
+        window.location.href = 'vistas/perfil-ajustes.html';
+      };
+      document.getElementById('beba-cerrar').onclick = function() {
+        localStorage.setItem(AVATAR_KEY, '1');
+        avatar.style.display = 'none';
+      };
+    });
+    </script>
+    <style>
+    #beba-avatar-flotante {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 18px;
+      animation: beba-flotar 2.8s ease-in-out infinite alternate;
+    }
+    .beba-avatar-img {
+      width: 120px;
+      height: auto;
+      filter: drop-shadow(0 6px 18px rgba(15,79,168,0.18));
+      user-select: none;
+      pointer-events: none;
+    }
+    .beba-bocadillo {
+      background: #fffbe7;
+      color: #04122d;
+      border-radius: 18px 18px 18px 0;
+      box-shadow: 0 4px 18px rgba(15,79,168,0.13);
+      padding: 18px 22px 18px 20px;
+      font-size: 1rem;
+      max-width: 270px;
+      min-width: 180px;
+      position: relative;
+      margin-bottom: 38px;
+      font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
+      font-weight: 500;
+      line-height: 1.35;
+      border: 2px solid #ffd327;
+    }
+    .beba-bocadillo-btn {
+      display: block;
+      margin: 14px auto 0 auto;
+      background: #ffd327;
+      color: #04122d;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-weight: 700;
+      font-size: 0.97rem;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .beba-bocadillo-btn:hover {
+      background: #ffe36b;
+    }
+    .beba-cerrar-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #04122d;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      opacity: 0.45;
+      transition: opacity 0.18s;
+      z-index: 2;
+    }
+    .beba-cerrar-btn:hover {
+      opacity: 1;
+    }
+    @keyframes beba-flotar {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-18px); }
+    }
+    @media (max-width: 700px) {
+      #beba-avatar-flotante {
+        right: 12px;
+        bottom: 12px;
+        gap: 10px;
+      }
+      .beba-avatar-img {
+        width: 80px;
+      }
+      .beba-bocadillo {
+        padding: 12px 12px 12px 12px;
+        font-size: 0.93rem;
+        min-width: 120px;
+        max-width: 180px;
+      }
+    }
+    </style>
 	<script>
 		(async () => {
 			const resetRequested = new URLSearchParams(window.location.search).get('sw-reset') === '1';

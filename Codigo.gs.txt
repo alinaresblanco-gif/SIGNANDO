@@ -6,10 +6,10 @@
 
 // CONFIGURACION (editar antes de desplegar)
 const SPREADSHEET_ID = '1255lFC7brgeL8p2fXw4VcEhITEPWDO-B_XyZdXjhw3U';
-const ADMIN_EMAIL    = 'alinares.blanco@gmail.com';
+const ADMIN_EMAIL    = 'alinares.panner@gmail.com';
 const ADMIN_KEY      = 'Linares#14530'; // ej. 'Sgn2026Admin#'
 const APP_URL        = 'https://alinaresblanco-gif.github.io/SIGNANDO/?sw-reset=1';     // URL publica de index.html
-const SCRIPT_URL     = 'https://script.google.com/macros/s/AKfycbx_TxvXHLWA0v6vClCFsl6E8KD3mDjCv-vFblXKMEbFt1PUWbLREFI8sKQIsEqgYbC27A/exec'; // URL de este despliegue
+const SCRIPT_URL     = 'https://script.google.com/macros/s/AKfycbwJQGyrUxr_3mlWawFxiVN6tLomrptZqpPZoTTxW9_J3v4cLo6rwjNe38yCnsaVROeyDQ/exec'; // URL de este despliegue
 const BACKEND_VERSION = '2026-05-26.1';
 // --------------------------------------------------------------
 

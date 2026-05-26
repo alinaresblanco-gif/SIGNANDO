@@ -52,6 +52,10 @@ function doGet(e) {
       return diagnosticoBackend();
     }
 
+    if (p.action === 'test_mail_admin' && p.adminKey === ADMIN_KEY) {
+      return testMailAdmin();
+    }
+
     if (p.action === 'admin_aprobar' && p.adminKey === ADMIN_KEY && p.email) {
       return aprobarUsuario(p.email);
     }
@@ -82,6 +86,21 @@ function diagnosticoBackend() {
     return ContentService.createTextOutput(
       'ERROR BACKEND\nversion=' + BACKEND_VERSION + '\ndetalle=' +
       (err && err.message ? err.message : String(err))
+    );
+  }
+}
+
+function testMailAdmin() {
+  try {
+    const now = new Date().toISOString();
+    enviarCorreoSolicitudAdmin('test.signando@example.com', 'Prueba sistema', 'test', now);
+    return ContentService.createTextOutput(
+      'OK MAIL TEST\nversion=' + BACKEND_VERSION + '\nadmin=' + ADMIN_EMAIL
+    );
+  } catch (err) {
+    return ContentService.createTextOutput(
+      'ERROR MAIL TEST\nversion=' + BACKEND_VERSION + '\nadmin=' + ADMIN_EMAIL +
+      '\ndetalle=' + (err && err.message ? err.message : String(err))
     );
   }
 }
@@ -187,9 +206,21 @@ function enviarCorreoSolicitudAdmin(email, nombre, tipo_usuario, fechaIso) {
     '&adminKey=' + encodeURIComponent(ADMIN_KEY);
 
   try {
+    const cuota = MailApp.getRemainingDailyQuota();
+    if (cuota <= 0) {
+      throw new Error('Cuota diaria de envio agotada (MailApp.getRemainingDailyQuota=0)');
+    }
+
     MailApp.sendEmail({
       to:      ADMIN_EMAIL,
       subject: '🖐 Signando – Solicitud de acceso: ' + nombre,
+      body:
+        'Nueva solicitud de acceso\n' +
+        'Nombre: ' + nombre + '\n' +
+        'Email: ' + email + '\n' +
+        'Tipo: ' + (tipo_usuario || '-') + '\n' +
+        'Fecha: ' + fechaIso + '\n\n' +
+        'Aprobar: ' + urlAprobar,
       htmlBody:
         '<div style="font-family:Arial,sans-serif;max-width:500px;">' +
         '<h2 style="color:#0f4fa8;">Nueva solicitud de acceso</h2>' +
@@ -202,7 +233,14 @@ function enviarCorreoSolicitudAdmin(email, nombre, tipo_usuario, fechaIso) {
         '<br><a href="' + urlAprobar + '" style="display:inline-block;background:#ffd327;padding:12px 24px;color:#04122d;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px;">✅ Aprobar acceso</a>' +
         '</div>'
     });
+
+    registrarLogSistema('mail_admin_ok', 'to=' + ADMIN_EMAIL + ' email=' + email);
   } catch (err) {
+    registrarLogSistema(
+      'mail_admin_error',
+      'to=' + ADMIN_EMAIL + ' email=' + email + ' detalle=' +
+      (err && err.message ? err.message : String(err))
+    );
     throw new Error('No se pudo enviar correo al admin (' + ADMIN_EMAIL + '): ' +
       (err && err.message ? err.message : String(err)));
   }
@@ -347,6 +385,15 @@ function registrarLog(email) {
     }
   } catch (e) {
     // Log no crítico: ignorar si la hoja no existe
+  }
+}
+
+function registrarLogSistema(tipo, detalle) {
+  try {
+    const hoja = getHoja('Log_accesos', true);
+    hoja.appendRow(['SYS:' + tipo, new Date().toISOString(), detalle || '']);
+  } catch (e) {
+    // No bloquear flujo por errores de log
   }
 }
 

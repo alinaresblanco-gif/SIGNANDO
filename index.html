@@ -582,113 +582,132 @@
     </div>
     <!-- Fin avatar flotante -->
 
-    <script>
-    // Mostrar avatar solo la primera vez
-    document.addEventListener('DOMContentLoaded', function() {
-      const AVATAR_KEY = 'beba_bienvenida_mostrada';
-      const avatar = document.getElementById('beba-avatar-flotante');
-      if (!localStorage.getItem(AVATAR_KEY)) {
-        avatar.style.display = 'flex';
-      }
-      document.getElementById('beba-ir-perfil').onclick = function() {
-        localStorage.setItem(AVATAR_KEY, '1');
-        avatar.style.display = 'none';
-        window.location.href = 'vistas/perfil-ajustes.html';
-      };
-      document.getElementById('beba-cerrar').onclick = function() {
-        localStorage.setItem(AVATAR_KEY, '1');
-        avatar.style.display = 'none';
-      };
-    });
-    </script>
+		<script>
+		// Mostrar avatar solo tras validación y solo la primera vez
+		document.addEventListener('DOMContentLoaded', function() {
+			const AVATAR_KEY = 'beba_bienvenida_mostrada';
+			const avatar = document.getElementById('beba-avatar-flotante');
+			// Solo mostrar si hay sesión activa y no se ha mostrado antes
+			try {
+				const token = localStorage.getItem('signando_token');
+				if (token && !localStorage.getItem(AVATAR_KEY)) {
+					avatar.style.display = 'flex';
+				}
+			} catch(e) {}
+			document.getElementById('beba-ir-perfil').onclick = function() {
+				localStorage.setItem(AVATAR_KEY, '1');
+				avatar.style.display = 'none';
+				window.location.href = 'vistas/perfil-ajustes.html';
+			};
+			document.getElementById('beba-cerrar').onclick = function() {
+				localStorage.setItem(AVATAR_KEY, '1');
+				avatar.style.display = 'none';
+			};
+		});
+		</script>
     <style>
-    #beba-avatar-flotante {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      gap: 18px;
-      animation: beba-flotar 2.8s ease-in-out infinite alternate;
-    }
-    .beba-avatar-img {
-      width: 120px;
-      height: auto;
-      filter: drop-shadow(0 6px 18px rgba(15,79,168,0.18));
-      user-select: none;
-      pointer-events: none;
-    }
-    .beba-bocadillo {
-      background: #fffbe7;
-      color: #04122d;
-      border-radius: 18px 18px 18px 0;
-      box-shadow: 0 4px 18px rgba(15,79,168,0.13);
-      padding: 18px 22px 18px 20px;
-      font-size: 1rem;
-      max-width: 270px;
-      min-width: 180px;
-      position: relative;
-      margin-bottom: 38px;
-      font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
-      font-weight: 500;
-      line-height: 1.35;
-      border: 2px solid #ffd327;
-    }
-    .beba-bocadillo-btn {
-      display: block;
-      margin: 14px auto 0 auto;
-      background: #ffd327;
-      color: #04122d;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 18px;
-      font-weight: 700;
-      font-size: 0.97rem;
-      cursor: pointer;
-      transition: background 0.18s;
-    }
-    .beba-bocadillo-btn:hover {
-      background: #ffe36b;
-    }
-    .beba-cerrar-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: none;
-      border: none;
-      color: #04122d;
-      font-size: 1.3rem;
-      font-weight: bold;
-      cursor: pointer;
-      opacity: 0.45;
-      transition: opacity 0.18s;
-      z-index: 2;
-    }
-    .beba-cerrar-btn:hover {
-      opacity: 1;
-    }
+		#beba-avatar-flotante {
+			position: fixed;
+			bottom: 48px;
+			right: 48px;
+			z-index: 9999;
+			display: flex;
+			flex-direction: row;
+			align-items: flex-end;
+			gap: 48px;
+			animation: beba-flotar 2.8s ease-in-out infinite alternate;
+		}
+		.beba-avatar-img {
+			width: 480px;
+			height: auto;
+			filter: drop-shadow(0 16px 48px rgba(15,79,168,0.18));
+			user-select: none;
+			pointer-events: none;
+			max-width: 40vw;
+			min-width: 220px;
+		}
+		.beba-bocadillo {
+			background: #fffbe7;
+			color: #04122d;
+			border-radius: 32px 32px 32px 0;
+			box-shadow: 0 8px 32px rgba(15,79,168,0.13);
+			padding: 48px 48px 48px 36px;
+			font-size: 2.2rem;
+			max-width: 600px;
+			min-width: 320px;
+			position: relative;
+			margin-bottom: 120px;
+			font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
+			font-weight: 600;
+			line-height: 1.35;
+			border: 3px solid #ffd327;
+		}
+		.beba-bocadillo-btn {
+			display: block;
+			margin: 32px auto 0 auto;
+			background: #ffd327;
+			color: #04122d;
+			border: none;
+			border-radius: 18px;
+			padding: 18px 48px;
+			font-weight: 800;
+			font-size: 1.5rem;
+			cursor: pointer;
+			transition: background 0.18s;
+			box-shadow: 0 2px 8px rgba(15,79,168,0.08);
+		}
+		.beba-bocadillo-btn:hover {
+			background: #ffe36b;
+		}
+		.beba-cerrar-btn {
+			position: absolute;
+			top: 18px;
+			right: 18px;
+			background: none;
+			border: none;
+			color: #04122d;
+			font-size: 2.2rem;
+			font-weight: bold;
+			cursor: pointer;
+			opacity: 0.45;
+			transition: opacity 0.18s;
+			z-index: 2;
+		}
+		.beba-cerrar-btn:hover {
+			opacity: 1;
+		}
     @keyframes beba-flotar {
       0% { transform: translateY(0px); }
       100% { transform: translateY(-18px); }
     }
-    @media (max-width: 700px) {
-      #beba-avatar-flotante {
-        right: 12px;
-        bottom: 12px;
-        gap: 10px;
-      }
-      .beba-avatar-img {
-        width: 80px;
-      }
-      .beba-bocadillo {
-        padding: 12px 12px 12px 12px;
-        font-size: 0.93rem;
-        min-width: 120px;
-        max-width: 180px;
-      }
-    }
+		@media (max-width: 900px) {
+			#beba-avatar-flotante {
+				right: 8vw;
+				bottom: 8vw;
+				gap: 16px;
+			}
+			.beba-avatar-img {
+				width: 160px;
+				min-width: 80px;
+			}
+			.beba-bocadillo {
+				padding: 18px 18px 18px 14px;
+				font-size: 1.1rem;
+				min-width: 120px;
+				max-width: 220px;
+				margin-bottom: 38px;
+			}
+			.beba-bocadillo-btn {
+				font-size: 1rem;
+				padding: 10px 18px;
+				margin-top: 14px;
+			}
+			.beba-cerrar-btn {
+				font-size: 1.3rem;
+				top: 8px;
+				right: 8px;
+			}
+		}
     </style>
 	<script>
 		(async () => {

@@ -24,12 +24,19 @@ function doPost(e) {
     return respuesta({ status: 'error', mensaje: 'JSON inválido' });
   }
 
-  switch (data.action) {
-    case 'verificar_acceso':  return verificarAcceso(data);
-    case 'solicitar_acceso':  return solicitarAcceso(data);
-    case 'actualizar_perfil': return actualizarPerfil(data);
-    default:
-      return respuesta({ status: 'error', mensaje: 'Acción desconocida: ' + data.action });
+  try {
+    switch (data.action) {
+      case 'verificar_acceso':  return verificarAcceso(data);
+      case 'solicitar_acceso':  return solicitarAcceso(data);
+      case 'actualizar_perfil': return actualizarPerfil(data);
+      default:
+        return respuesta({ status: 'error', mensaje: 'Acción desconocida: ' + data.action });
+    }
+  } catch (err) {
+    return respuesta({
+      status: 'error',
+      mensaje: 'Error interno backend: ' + (err && err.message ? err.message : String(err))
+    });
   }
 }
 
@@ -37,11 +44,17 @@ function doPost(e) {
  * Maneja peticiones GET — solo para aprobación de admin por enlace en email.
  */
 function doGet(e) {
-  const p = e.parameter;
-  if (p.action === 'admin_aprobar' && p.adminKey === ADMIN_KEY && p.email) {
-    return aprobarUsuario(p.email);
+  try {
+    const p = e.parameter;
+    if (p.action === 'admin_aprobar' && p.adminKey === ADMIN_KEY && p.email) {
+      return aprobarUsuario(p.email);
+    }
+    return ContentService.createTextOutput('Acceso no autorizado.');
+  } catch (err) {
+    return ContentService.createTextOutput(
+      'Error backend: ' + (err && err.message ? err.message : String(err))
+    );
   }
-  return ContentService.createTextOutput('Acceso no autorizado.');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -246,8 +259,25 @@ const COL = {
 //  HELPERS
 // ══════════════════════════════════════════════════════════════
 
-function getHoja(nombre) {
-  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(nombre);
+function getHoja(nombre, crearSiNoExiste) {
+  let ss;
+  try {
+    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  } catch (err) {
+    throw new Error(
+      'No se pudo abrir SPREADSHEET_ID. Verifica ID, permisos y despliegue "Ejecutar como" propietario. Detalle: ' +
+      (err && err.message ? err.message : String(err))
+    );
+  }
+
+  let hoja = ss.getSheetByName(nombre);
+  if (!hoja && crearSiNoExiste) {
+    hoja = ss.insertSheet(nombre);
+  }
+  if (!hoja) {
+    throw new Error('No existe la hoja: ' + nombre);
+  }
+  return hoja;
 }
 
 function filaAObjeto(fila) {
@@ -265,7 +295,7 @@ function filaAObjeto(fila) {
 
 function registrarLog(email) {
   try {
-    const hoja = getHoja('Log_accesos');
+    const hoja = getHoja('Log_accesos', true);
     if (hoja) {
       hoja.appendRow([email, new Date().toISOString(), '']);
     }

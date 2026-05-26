@@ -614,7 +614,7 @@
 			display: flex;
 			flex-direction: row;
 			align-items: flex-end;
-			gap: 48px;
+			gap: 0px;
 			animation: beba-flotar 2.8s ease-in-out infinite alternate;
 		}
 		.beba-avatar-img {
@@ -629,22 +629,41 @@
 		.beba-bocadillo {
 			background: #fffbe7;
 			color: #04122d;
-			border-radius: 32px 32px 32px 0;
+			border-radius: 32px 32px 32px 32px;
 			box-shadow: 0 8px 32px rgba(15,79,168,0.13);
-			padding: 36px 36px 36px 27px;
-			font-size: 1.65rem;
-			max-width: 450px;
-			min-width: 240px;
+			padding: 32px 38px 32px 38px;
+			font-size: 2.1vw;
+			width: 30vw;
+			min-width: 260px;
+			max-width: 520px;
 			position: relative;
-			margin-bottom: 90px;
+			margin-bottom: 340px;
+			margin-right: -120px;
+			margin-left: -60px;
 			font-family: 'Lexend', 'Segoe UI', Tahoma, sans-serif;
 			font-weight: 600;
 			line-height: 1.35;
 			border: 3px solid #ffd327;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.beba-bocadillo::after {
+			content: '';
+			position: absolute;
+			left: 18px;
+			bottom: -38px;
+			width: 0;
+			height: 0;
+			border-left: 38px solid transparent;
+			border-right: 38px solid transparent;
+			border-top: 38px solid #fffbe7;
+			filter: drop-shadow(0 2px 2px rgba(15,79,168,0.10));
+			z-index: 1;
 		}
 		.beba-bocadillo-btn {
 			display: block;
-			margin: 32px auto 0 auto;
+			margin: 32px 0 0 0;
 			background: #ffd327;
 			color: #04122d;
 			border: none;
@@ -682,20 +701,29 @@
     }
 		@media (max-width: 900px) {
 			#beba-avatar-flotante {
-				right: 8vw;
-				bottom: 8vw;
-				gap: 16px;
+				right: 2vw;
+				bottom: 2vw;
+				gap: 0px;
 			}
 			.beba-avatar-img {
-				width: 640px;
+				width: 320px;
 				min-width: 80px;
 			}
 			.beba-bocadillo {
-				padding: 14px 14px 14px 10px;
-				font-size: 0.82rem;
+				padding: 10px 10px 10px 10px;
+				font-size: 1.1rem;
 				min-width: 90px;
-				max-width: 120px;
-				margin-bottom: 18px;
+				max-width: 180px;
+				margin-bottom: 90px;
+				margin-right: -40px;
+				margin-left: -20px;
+			}
+			.beba-bocadillo::after {
+				left: 10px;
+				bottom: -18px;
+				border-left: 18px solid transparent;
+				border-right: 18px solid transparent;
+				border-top: 18px solid #fffbe7;
 			}
 			.beba-bocadillo-btn {
 				font-size: 0.7rem;
